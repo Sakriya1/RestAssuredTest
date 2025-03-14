@@ -95,9 +95,11 @@ public class MainTest {
         // Validate the updated book details
         response.then().body("price", equalTo(20.00f));
     }
+
+
     @Test
     public void testDeleteBook() {
-        int bookId = 1;
+        int bookId = 11;
 
         Response response = given()
                 .auth().basic("admin", "password")
@@ -113,5 +115,9 @@ public class MainTest {
                 .when().get("http://localhost:8080/books/" + bookId)
                 .then().statusCode(404); // Expecting 404 Not Found
     }
+
+
+
+
 
 }
