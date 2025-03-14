@@ -7,6 +7,7 @@ import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 @Test
 public class MainTest {
@@ -47,5 +48,70 @@ public class MainTest {
         validatableResponse.statusLine("HTTP/1.1 200 ");
     }
 
+    @Test
+    public void testCreateBook() {
+        String requestBody = "{\n" +
+                "    \"name\": \"A to the Bodhisattva Way of Life\",\n" +
+                "    \"author\": \"Santideva\",\n" +
+                "    \"price\": 15.41\n" +
+                "}";
+
+        Response response = given()
+                .auth().basic("admin", "password")
+                .contentType("application/json")
+                .body(requestBody)
+                .when()
+                .post("http://localhost:8080/books")
+                .then()
+                .statusCode(201)
+                .extract().response();
+
+        // Validate the response body
+        response.then().body("name", equalTo("A to the Bodhisattva Way of Life"))
+                .body("author", equalTo("Santideva"))
+                .body("price", equalTo(15.41f));
+    }
+    @Test
+    public void testUpdateBook() {
+        int bookId = 1;
+
+        String updatedRequestBody = "{\n" +
+                "    \"id\": 1,\n" +
+                "    \"name\": \"A to the Bodhisattva Way of Life\",\n" +
+                "    \"author\": \"Santideva\",\n" +
+                "    \"price\": 20.00\n" +
+                "}";
+
+        Response response = given()
+                .auth().basic("admin", "password")
+                .contentType("application/json")
+                .body(updatedRequestBody)
+                .when()
+                .put("http://localhost:8080/books/" + bookId)
+                .then()
+                .statusCode(200)
+                .extract().response();
+
+        // Validate the updated book details
+        response.then().body("price", equalTo(20.00f));
+    }
+    @Test
+    public void testDeleteBook() {
+        int bookId = 1;
+
+        Response response = given()
+                .auth().basic("admin", "password")
+                .contentType("application/json")
+                .when()
+                .delete("http://localhost:8080/books/" + bookId)
+                .then()
+                .statusCode(200)
+                .extract().response();
+
+        // Optionally, check if the book is deleted by trying to get the same book
+        given().auth().basic("admin", "password")
+                .when().get("http://localhost:8080/books/" + bookId)
+                .then().statusCode(404); // Expecting 404 Not Found
+    }
 
 }

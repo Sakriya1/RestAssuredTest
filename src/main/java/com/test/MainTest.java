@@ -1,4 +1,4 @@
-package com.test;
+package com.rest.test;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -7,7 +7,7 @@ import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 @Test
 public class MainTest {
@@ -49,25 +49,27 @@ public class MainTest {
     }
 
     @Test
-    public void testGetBooks() {
+    public void testCreateBook() {
+        String requestBody = "{\n" +
+                "    \"name\": \"A to the Bodhisattva Way of Life\",\n" +
+                "    \"author\": \"Santideva\",\n" +
+                "    \"price\": 15.41\n" +
+                "}";
+
         Response response = given()
-                .auth().basic("user", "password")
+                .auth().basic("admin", "password")
                 .contentType("application/json")
+                .body(requestBody)
                 .when()
-                .get("http://localhost:8082/books")
+                .post("http://localhost:8082/books")
                 .then()
-                .statusCode(200)
+                .statusCode(201)
                 .extract().response();
 
-        // Validate pagination and books data
-        response.then().body("page", equalTo(1))
-                .body("limit", equalTo(10))
-                .body("total", equalTo(50))
-                .body("users", hasSize(greaterThanOrEqualTo(2))); // At least two books
-
-        // Optionally, validate the first book's details
-        response.then().body("users[0].name", equalTo("John Doe"))
-                .body("users[0].email", equalTo("john.doe@example.com"));
+        // Validate the response body
+        response.then().body("name", equalTo("A to the Bodhisattva Way of Life"))
+                .body("author", equalTo("Santideva"))
+                .body("price", equalTo(15.41f));
     }
 
 
