@@ -10,7 +10,7 @@ import static org.hamcrest.Matchers.*;
 
 public class Assertations {
 
-    private static final String BASE_URL = "http://localhost:8080/books";
+    private static final String BASE_URL = "http://localhost:8082/books";
     private static final String USERNAME = "admin";
     private static final String PASSWORD = "password";
 
@@ -118,6 +118,6 @@ public class Assertations {
                 .when()
                 .get(BASE_URL + "/" + bookId)
                 .then()
-                .statusCode(404); // Expecting 404 Not Found
+                .statusCode(404); //
 }
 }
