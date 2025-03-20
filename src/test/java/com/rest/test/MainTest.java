@@ -11,7 +11,7 @@ import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @Test
-public class maintest {
+public class MainTest {
 
     RequestSpecification requestSpecification;
     Response response;
