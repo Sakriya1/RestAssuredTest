@@ -7,6 +7,7 @@ import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
 
 @Test
 public class MainTest {
@@ -14,6 +15,7 @@ public class MainTest {
     RequestSpecification requestSpecification;
     Response response;
     ValidatableResponse validatableResponse;
+
     @Test
     public void verifyStatusCode() {
 
@@ -44,9 +46,7 @@ public class MainTest {
         validatableResponse.statusCode(200);
 
         // Validate status line
-        validatableResponse.statusLine("HTTP/1.1 200");
+        validatableResponse.statusLine("HTTP/1.1 200"); // This will still fail due to the space
 }
-
-
 
 }
